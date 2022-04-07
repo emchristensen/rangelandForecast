@@ -38,3 +38,7 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 *.Rproj
+
+# Folders to ignore
+/Data/Spatial/
+/Libraries/
