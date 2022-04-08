@@ -1,7 +1,7 @@
-# a248
+# stsimMLRA42
 # Sarah Chisholm (ApexRMS)
 #
-# Adjacency analysis of shrub cover in MLA 42
+# Adjacency analysis of shrub cover in MLRA 42
 
 ## Workspace ----
 

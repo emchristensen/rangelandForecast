@@ -1,4 +1,4 @@
-# a248
+# stsimMLRA42
 # Sarah Chisholm (ApexRMS)
 #
 # Mask state class rasters to soil type raster and to an elevation range of 1000-2000m 
