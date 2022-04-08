@@ -12,6 +12,8 @@ library(tidyverse)
 
 # Define directories
 spatialDataDir <- file.path("Data", "Spatial")
+tabularDataDir <- file.path("Data", "Tabular")
+plotDir <- file.path("Plots")
 
 # Load spatial data
 
@@ -33,6 +35,9 @@ targetExtent <- c(896966.2851019165245816,
                   915889.6527247427729890,
                   7645343.2786588277667761,
                   7662889.3997297743335366)
+
+# Radius of circular moving window in units of the crs (meters)
+windowDiameter <- 720
 
 ## Crop state class rasters to target extent ----
 # Create a template raster with the target extent
@@ -78,7 +83,7 @@ soilTypeCropRaster[soilTypeCropRaster == 2] <- 8
 
 ## Create the shrub focal window raster ----
 # Define the window size and shape
-movingWindow <- focalWeight(shrub2015Raster, 90, type = "circle")
+movingWindow <- focalWeight(shrub2015Raster, windowDiameter, type = "circle")
 
 # Generate focal window raster
 shrub2015FocalWindowRaster <- raster::focal(shrub2015Raster, movingWindow, pad = TRUE, padValue = 0.0)
@@ -104,14 +109,38 @@ shrubTibble <- as.data.frame(rasterStack) %>%
                       StateClass2015 = as.factor(StateClass2015))
 
 # Visualize data
-plot(jitter(shrubTibble$ShrubFocalWindow2015), jitter(shrubTibble$newShrub2020))
+shrubPresencePlot <- shrubTibble %>% 
+  ggplot(aes(x = ShrubFocalWindow2015, y = newShrub2020)) +
+  geom_jitter() +
+  xlab("Proportion of adjacent shrub cover in 2015") +
+  ylab("Probability of shrub presence in 2020")
+  
+ggsave(
+  filename = file.path(plotDir, str_c("shrub-presence-2020-vs-shrub-proportion-2015-", windowDiameter, "m-window.png")),
+  plot = shrubPresencePlot,
+  device = "png", 
+  dpi = 300
+)
 
 # Model likelihood of shrub presence in 2020 as a function of proportion 
 # of adjacent cells that are shrub in 2015, stratified by soil type
 modelShrub <- glm(newShrub2020 ~ ShrubFocalWindow2015 + SoilType, data = shrubTibble, family = binomial)
 
+# Get predicted values
+transitionProbability <- tibble(
+  TransitionType = "Shrub Establishment",
+  ShrubFocalWindow2015 = c(seq(0, 1, 0.1), seq(0, 1, 0.1)),
+  SoilType = c(as.factor(rep(6, times = 11)), as.factor(rep(7, times = 11)))) 
+
+transitionProbability <- transitionProbability %>% 
+  mutate(TransitionProbability = predict(modelShrub, transitionProbability, type = "response")) %>% 
+  rename(ProportionShrubCover = ShrubFocalWindow2015)
+
+# Write transition probabilities to disk
+write_csv(transitionProbability, file.path(tabularDataDir, str_c("transition-multipliers-", windowDiameter, "m-window.csv")))
+
 # Plot model prediction
-shrubTibble %>% 
+transitionProbabilityPlot <- shrubTibble %>% 
   ggplot(aes(x = ShrubFocalWindow2015, y = newShrub2020)) + 
   geom_point() + 
   #geom_jitter() +
@@ -119,4 +148,11 @@ shrubTibble %>%
   facet_wrap(~SoilType) +
   xlab("Proportion of adjacent shrub cover in 2015") +
   ylab("Probability of shrub presence in 2020")
+
+ggsave(
+  filename = file.path(plotDir, str_c("grassland2015-to-shrubland2020-probability-", windowDiameter, "m-window.png")),
+  plot = transitionProbabilityPlot,
+  device = "png", 
+  dpi = 300
+)
   
