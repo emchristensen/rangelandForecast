@@ -41,4 +41,6 @@ vignettes/*.pdf
 
 # Folders to ignore
 /Data/Spatial/
+/Data/Tabular/
 /Libraries/
+/Plots/
