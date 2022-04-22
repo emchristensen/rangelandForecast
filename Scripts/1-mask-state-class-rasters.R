@@ -5,6 +5,9 @@
 
 ## Workspace ----
 
+# Set environment variable TZ when running on AWS EC2 instance
+Sys.setenv(TZ='UTC')
+
 # Load libraries
 library(terra)
 library(tidyverse)
