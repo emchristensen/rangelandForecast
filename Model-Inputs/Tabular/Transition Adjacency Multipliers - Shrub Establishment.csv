@@ -1,0 +1,67 @@
+Primary Stratum,Transition Type/Group,Neighbor Value,Multiplier
+Gypsic,Shrub establishment [Type],0,0.020687008775095928
+Gypsic,Shrub establishment [Type],0.1,0.022059174731114052
+Gypsic,Shrub establishment [Type],0.2,0.023520170312385794
+Gypsic,Shrub establishment [Type],0.30000000000000004,0.025075447617515876
+Gypsic,Shrub establishment [Type],0.4,0.026730752744177376
+Gypsic,Shrub establishment [Type],0.5,0.028492136042355003
+Gypsic,Shrub establishment [Type],0.6000000000000001,0.030365961895964088
+Gypsic,Shrub establishment [Type],0.7000000000000001,0.03235891787504672
+Gypsic,Shrub establishment [Type],0.8,0.03447802307957789
+Gypsic,Shrub establishment [Type],0.9,0.03673063547311524
+Gypsic,Shrub establishment [Type],1,0.039124457980162695
+Bedrock and Colluvium,Shrub establishment [Type],0,0.028950746928586405
+Bedrock and Colluvium,Shrub establishment [Type],0.1,0.03085377610060842
+Bedrock and Colluvium,Shrub establishment [Type],0.2,0.03287766236390632
+Bedrock and Colluvium,Shrub establishment [Type],0.30000000000000004,0.03502950906497278
+Bedrock and Colluvium,Shrub establishment [Type],0.4,0.03731676006683692
+Bedrock and Colluvium,Shrub establishment [Type],0.5,0.03974720549829484
+Bedrock and Colluvium,Shrub establishment [Type],0.6000000000000001,0.04232898594760239
+Bedrock and Colluvium,Shrub establishment [Type],0.7000000000000001,0.04507059481466582
+Bedrock and Colluvium,Shrub establishment [Type],0.8,0.04798087850749705
+Bedrock and Colluvium,Shrub establishment [Type],0.9,0.051069034139893284
+Bedrock and Colluvium,Shrub establishment [Type],1,0.05434460435845468
+Sandy and Deep Sand,Shrub establishment [Type],0,0.021828369142737225
+Sandy and Deep Sand,Shrub establishment [Type],0.1,0.023274442106242646
+Sandy and Deep Sand,Shrub establishment [Type],0.2,0.02481388347912484
+Sandy and Deep Sand,Shrub establishment [Type],0.30000000000000004,0.026452390467707757
+Sandy and Deep Sand,Shrub establishment [Type],0.4,0.028195962878805023
+Sandy and Deep Sand,Shrub establishment [Type],0.5,0.030050912988896908
+Sandy and Deep Sand,Shrub establishment [Type],0.6000000000000001,0.032023874811150065
+Sandy and Deep Sand,Shrub establishment [Type],0.7000000000000001,0.03412181258489407
+Sandy and Deep Sand,Shrub establishment [Type],0.8,0.036352028289634505
+Sandy and Deep Sand,Shrub establishment [Type],0.9,0.038722167961567744
+Sandy and Deep Sand,Shrub establishment [Type],1,0.041240226564979575
+Gravelly and Calcic,Shrub establishment [Type],0,0.07028467556613167
+Gravelly and Calcic,Shrub establishment [Type],0.1,0.07469572149294627
+Gravelly and Calcic,Shrub establishment [Type],0.2,0.07935997282617661
+Gravelly and Calcic,Shrub establishment [Type],0.30000000000000004,0.08428894461772454
+Gravelly and Calcic,Shrub establishment [Type],0.4,0.08949429123585109
+Gravelly and Calcic,Shrub establishment [Type],0.5,0.09498775360302511
+Gravelly and Calcic,Shrub establishment [Type],0.6000000000000001,0.10078109882766265
+Gravelly and Calcic,Shrub establishment [Type],0.7000000000000001,0.10688605184444926
+Gravelly and Calcic,Shrub establishment [Type],0.8,0.1133142187482263
+Gravelly and Calcic,Shrub establishment [Type],0.9,0.12007700159750345
+Gravelly and Calcic,Shrub establishment [Type],1,0.1271855045774642
+Bottomland,Shrub establishment [Type],0,0.059992968308666725
+Bottomland,Shrub establishment [Type],0.1,0.06380243536462417
+Bottomland,Shrub establishment [Type],0.2,0.06783634150044318
+Bottomland,Shrub establishment [Type],0.30000000000000004,0.07210564779763089
+Bottomland,Shrub establishment [Type],0.4,0.0766215588393263
+Bottomland,Shrub establishment [Type],0.5,0.08139548747566802
+Bottomland,Shrub establishment [Type],0.6000000000000001,0.0864390131766013
+Bottomland,Shrub establishment [Type],0.7000000000000001,0.09176383348620142
+Bottomland,Shrub establishment [Type],0.8,0.0973817081192863
+Bottomland,Shrub establishment [Type],0.9,0.1033043952829144
+Bottomland,Shrub establishment [Type],1,0.10954357986455966
+Loamy-Clayey,Shrub establishment [Type],0,0.026732420872328674
+Loamy-Clayey,Shrub establishment [Type],0.1,0.02849391087129832
+Loamy-Clayey,Shrub establishment [Type],0.2,0.03036784980043897
+Loamy-Clayey,Shrub establishment [Type],0.30000000000000004,0.03236092554977962
+Loamy-Clayey,Shrub establishment [Type],0.4,0.03448015754697513
+Loamy-Clayey,Shrub establishment [Type],0.5,0.03673290408986244
+Loamy-Clayey,Shrub establishment [Type],0.6000000000000001,0.0391268684424975
+Loamy-Clayey,Shrub establishment [Type],0.7000000000000001,0.04167010344270607
+Loamy-Clayey,Shrub establishment [Type],0.8,0.04437101434210891
+Loamy-Clayey,Shrub establishment [Type],0.9,0.047238359571508334
+Loamy-Clayey,Shrub establishment [Type],1,0.05028124909581063
