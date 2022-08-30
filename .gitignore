@@ -45,3 +45,4 @@ vignettes/*.pdf
 /Libraries/
 /Plots/
 /Model-Inputs/Spatial/
+Model-Inputs/Tabular/adjacency-output.csv

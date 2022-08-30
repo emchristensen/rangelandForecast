@@ -16,48 +16,18 @@ library(tidyverse)
 # Define directories
 spatialDataDir <- file.path("Data", "Spatial")
 tabularDataDir <- file.path("Data", "Tabular")
-tabularModelInputsDir <- file.path("Model Inputs", "Tabular")
+tabularModelInputsDir <- file.path("Model-Inputs", "Tabular")
 plotDir <- file.path("Plots")
+
+adjacencyFilename <- file.path(tabularModelInputsDir, "adjacency-output.csv")
 
 # Parameters
 # Radius of circular moving window in units of the crs (meters)
 windowRadius <- 90
 
 # Timestep pairs
-timeStepPairs <- list(list(x = 1985,y = 1986),
-                      list(x = 1986,y = 1987),
-                      list(x = 1987,y = 1988),
-                      list(x = 1988,y = 1989),
-                      list(x = 1989,y = 1990),
-                      list(x = 1990,y = 1991),
-                      list(x = 1991,y = 1992),
-                      list(x = 1992,y = 1993),
-                      list(x = 1993,y = 1994),
-                      list(x = 1994,y = 1995),
-                      list(x = 1995,y = 1996),
-                      list(x = 1996,y = 1997),
-                      list(x = 1997,y = 1998),
-                      list(x = 1998,y = 1999),
-                      list(x = 1999,y = 2000),
-                      list(x = 2000,y = 2001),
-                      list(x = 2001,y = 2002),
-                      list(x = 2002,y = 2003),
-                      list(x = 2003,y = 2004),
-                      list(x = 2004,y = 2005),
-                      list(x = 2005,y = 2006),
-                      list(x = 2006,y = 2007),
-                      list(x = 2007,y = 2008),
-                      list(x = 2008,y = 2009),
-                      list(x = 2009,y = 2010),
-                      list(x = 2010,y = 2011),
-                      list(x = 2011,y = 2013),
-                      list(x = 2013,y = 2014),
-                      list(x = 2014,y = 2015),
-                      list(x = 2015,y = 2016),
-                      list(x = 2016,y = 2017),
-                      list(x = 2017,y = 2018),
-                      list(x = 2018,y = 2019),
-                      list(x = 2019,y = 2020))
+timeStepPairs <- tibble(x = 1985:2019, y = 1986:2020) %>% 
+  filter(x != 2012, y!= 2012)
 
 # timeStepPairs <- list(startTime = seq(1985,2019), endTime = seq(1986,2020))
 # # zzz: remove pairs 2011, 2012 and 2012, 2013 for now
@@ -66,7 +36,7 @@ timeStepPairs <- list(list(x = 1985,y = 1986),
 
 # Load spatial data
 # Study area mask
-studyAreaMaskRaster <- rast(file.path(spatialDataDir, "study-area-mask-small.tif"))
+studyAreaMaskRaster <- rast(file.path(spatialDataDir, "study-area-mask.tif"))
 
 # Soil type
 soilTypeRaster <- rast(file.path(spatialDataDir, "soil-type.tif"))
@@ -100,20 +70,33 @@ soilTypeReclassRaster <- soilTypeRaster %>%
 names(soilTypeReclassRaster) <- "soilType"
 
 ## Generate data frame ----
+tibble(StartTime = integer(0),
+       SoilType = character(0),
+       yearType = character(0),
+       ShrubProportionStart = numeric(0),
+       NewShrubEnd = integer(0)) %>% 
+  write_csv(adjacencyFilename)
+
 start_time <- Sys.time()
-shrubTibble <- imap_dfr(timeStepPairs,
-~{
+for(i in seq_along(timeStepPairs$x))
+{
+  gc()
+  x <- timeStepPairs$x[i]
+  y <- timeStepPairs$y[i]
+  
+  print(x)
+  
   #.x <- 1
   # start_time <- Sys.time()
   ## Crop and mask the state class rasters to the template ----
   stateClassXRaster <- rast(list.files(file.path(spatialDataDir, "RCMAP", "Processed"),
-                                       pattern = str_c("states_", .x$x, ".tif$"),
+                                       pattern = str_c("states_", x, ".tif$"),
                                        full.names = TRUE)) %>% 
                        project(y = studyAreaMaskRaster, method = "near") %>%
                        mask(mask = studyAreaMaskRaster)
   
   stateClassYRaster <- rast(list.files(file.path(spatialDataDir, "RCMAP", "Processed"),
-                                       pattern = str_c("states_", .x$y, ".tif$"),
+                                       pattern = str_c("states_", y, ".tif$"),
                                        full.names = TRUE)) %>% 
                        project(y = studyAreaMaskRaster, method = "near")%>%
                        mask(mask = studyAreaMaskRaster) 
@@ -122,50 +105,50 @@ shrubTibble <- imap_dfr(timeStepPairs,
   # 1 (grassland) -> 0
   # 2 (low shrub) -> 1
   # 3 (shrubland) -> 1
-  shrubReclassMatrix <- matrix(data = c(1,2,3,0,1,1), nrow = 3, ncol = 2)
-
-  # Reclassify stateClassXRaster
-  shrubXRaster <- stateClassXRaster %>%
-    classify(rcl = shrubReclassMatrix)
-
-  # Reclassify stateClassYRaster
-  shrubYRaster <- stateClassYRaster %>%
-    classify(rcl = shrubReclassMatrix)
-
-  # Get cells that had no shrub in shrubXRaster and have it in shrubYRaster
-  newShrubYRaster <- shrubYRaster - shrubXRaster
-  newShrubYRaster[newShrubYRaster == -1] <- 0
-
-  # Rename rasters
-  names(shrubXRaster) <- "shrubX"
-  names(newShrubYRaster) <- "newShrubY"
-  
-  # ## Reclassify state class rasters to make binary shrub loss layers ----
-  # # 1 (grassland) -> 1  
-  # # 2 (low shrub) -> 0
-  # # 3 (shrubland) -> 0 
-  # noShrubReclassMatrix <- matrix(data = c(1,2,3,1,0,0), nrow = 3, ncol = 2)
+  # shrubReclassMatrix <- matrix(data = c(1,2,3,0,1,1), nrow = 3, ncol = 2)
   # 
-  # # Reclassify stateClassXRaster 
-  # noShrubXRaster <- stateClassXRaster %>% 
-  #   classify(rcl = noShrubReclassMatrix)
+  # # Reclassify stateClassXRaster
+  # shrubXRaster <- stateClassXRaster %>%
+  #   classify(rcl = shrubReclassMatrix)
   # 
-  # # Reclassify stateClassYRaster 
-  # noShrubYRaster <- stateClassYRaster %>% 
-  #   classify(rcl = noShrubReclassMatrix)
+  # # Reclassify stateClassYRaster
+  # shrubYRaster <- stateClassYRaster %>%
+  #   classify(rcl = shrubReclassMatrix)
   # 
-  # # Get cells that experienced shrub loss (shrubland/low shrub -> grassland)
-  # newNoShrubYRaster <- noShrubYRaster - noShrubXRaster
-  # newNoShrubYRaster[newNoShrubYRaster == -1] <- 0
+  # # Get cells that had no shrub in shrubXRaster and have it in shrubYRaster
+  # newShrubYRaster <- shrubYRaster - shrubXRaster
+  # newShrubYRaster[newShrubYRaster == -1] <- 0
   # 
   # # Rename rasters
-  # names(noShrubXRaster) <- "noShrubX" 
-  # names(newNoShrubYRaster) <- "newNoShrubY" 
+  # names(shrubXRaster) <- "shrubX"
+  # names(newShrubYRaster) <- "newShrubY"
+  
+  ## Reclassify state class rasters to make binary shrub loss layers ----
+  # 1 (grassland) -> 1
+  # 2 (low shrub) -> 0
+  # 3 (shrubland) -> 0
+  noShrubReclassMatrix <- matrix(data = c(1,2,3,1,0,0), nrow = 3, ncol = 2)
+
+  # Reclassify stateClassXRaster
+  noShrubXRaster <- stateClassXRaster %>%
+    classify(rcl = noShrubReclassMatrix)
+
+  # Reclassify stateClassYRaster
+  noShrubYRaster <- stateClassYRaster %>%
+    classify(rcl = noShrubReclassMatrix)
+
+  # Get cells that experienced shrub loss (shrubland/low shrub -> grassland)
+  newNoShrubYRaster <- noShrubYRaster - noShrubXRaster
+  newNoShrubYRaster[newNoShrubYRaster == -1] <- 0
+
+  # Rename rasters
+  names(noShrubXRaster) <- "noShrubX"
+  names(newNoShrubYRaster) <- "newNoShrubY"
   
   # # Create a multiband raster of relevant layers
   # rasterStack <- c(soilTypeReclassRaster, shrubXRaster, newShrubYRaster, noShrubXRaster, newNoShrubYRaster)
   # To run for shrub loss only
-  rasterStack <- c(soilTypeReclassRaster, shrubXRaster, newShrubYRaster)
+  rasterStack <- c(soilTypeReclassRaster, noShrubXRaster, newNoShrubYRaster)
   
   # Memory management
   # rm(studyAreaMaskRaster, soilTypeRaster, soilTypeReclassRaster, stateClassXRaster, stateClassYRaster, 
@@ -173,45 +156,44 @@ shrubTibble <- imap_dfr(timeStepPairs,
   #    shrubYRaster, noShrubYRaster, newShrubYRaster, newNoShrubYRaster)
   rm(stateClassXRaster, stateClassYRaster, 
     shrubReclassMatrix,
-     shrubYRaster, newShrubYRaster)
+    noShrubYRaster, newNoShrubYRaster)
   
     ## Create focal window rasters ----
   # Define the window size and shape
-  shrubMovingWindow <- focalWeight(shrubXRaster, windowRadius, type = "circle")
-  #lowShrubMovingWindow <- focalWeight(noShrubXRaster, windowRadius, type = "circle")
+  #shrubMovingWindow <- focalWeight(shrubXRaster, windowRadius, type = "circle")
+  lowShrubMovingWindow <- focalWeight(noShrubXRaster, windowRadius, type = "circle")
   
   # Generate focal window raster
-  shrubXFocalWindowRaster <- raster::focal(shrubXRaster, shrubMovingWindow, pad = TRUE, padValue = 0.0)
-  #noShrubXFocalWindowRaster <- raster::focal(noShrubXRaster, lowShrubMovingWindow, pad = TRUE, padValue = 0.0)
+  #shrubXFocalWindowRaster <- raster::focal(shrubXRaster, shrubMovingWindow, pad = TRUE, padValue = 0.0)
+  noShrubXFocalWindowRaster <- raster::focal(noShrubXRaster, lowShrubMovingWindow, pad = TRUE, padValue = 0.0)
   
   # Rename focal window raster
   # zzz: root of error downstream?
-  #names(shrubXFocalWindowRaster) <- "ShrubProportion" %>% str_c(paste0(.x$x, "_", windowRadius, "m"))
-  #names(noShrubXFocalWindowRaster) <- "NoShrubProportion" %>% str_c(paste0(.x$x, "_", windowRadius, "m"))
+  #names(shrubXFocalWindowRaster) <- "ShrubProportion" %>% str_c(paste0(x, "_", windowRadius, "m"))
+  #names(noShrubXFocalWindowRaster) <- "NoShrubProportion" %>% str_c(paste0(x, "_", windowRadius, "m"))
   
   # Shrub proportion raster to stack
-  add(rasterStack) <- shrubXFocalWindowRaster
-  #add(rasterStack) <- noShrubXFocalWindowRaster
+  #add(rasterStack) <- shrubXFocalWindowRaster
+  add(rasterStack) <- noShrubXFocalWindowRaster
   
   # Memory management
   # rm(shrubXRaster, noShrubXRaster, shrubMovingWindow, lowShrubMovingWindow, 
   #    shrubXFocalWindowRaster, noShrubXFocalWindowRaster)
-  rm(shrubXRaster, shrubMovingWindow, 
-     shrubXFocalWindowRaster)
+  rm(noShrubXRaster, lowShrubMovingWindow, 
+     noShrubXFocalWindowRaster)
   
   ## Generate data frame ----
   output <- as.data.frame(rasterStack) %>% 
     tibble %>% 
-    mutate(StartTime = .x$x %>% as.numeric,
-           EndTime = .x$y %>%  as.numeric,
-           WindowRadius = windowRadius %>% as.factor,
-           ShrubProportionStart = focal_sum, 
-           ShrubPresenceStart = shrubX,
-           NewShrubEnd = newShrubY,
-           #NoShrubProportionStart = "NoShrubProportion" %>% str_c(paste0(.x$x, "_", windowRadius, "m")),
-           #NoShrubProportionStart = focal_sum,
-           #NoShrubPresenceStart = noShrubX,
-           #NewNoShrubEnd = newNoShrubY,
+    mutate(StartTime = x %>% as.numeric,
+           EndTime = y %>%  as.numeric,
+           #WindowRadius = windowRadius %>% as.factor,
+           #ShrubProportionStart = focal_sum, 
+           #ShrubPresenceStart = shrubX,
+           #NewShrubEnd = newShrubY,
+           NoShrubProportionStart = focal_sum,
+           NoShrubPresenceStart = noShrubX,
+           NewNoShrubEnd = newNoShrubY,
            SoilType = case_when(soilType == 3 ~ "Loamy-Clayey",
                                 soilType == 4 ~ "Gravelly and Calcic",
                                 soilType == 5 ~ "Bedrock and Colluvium",
@@ -221,9 +203,12 @@ shrubTibble <- imap_dfr(timeStepPairs,
     # Match the type of drought year base on the EndTime of the adjacency analysis
     # (i.e. is the probability of transition in present year influenced by drought conditions of present year)
     left_join(droughtYearTypes, by = c("EndTime" = "year")) %>% 
-    select(StartTime, EndTime, WindowRadius, SoilType, yearType, yearTypeId,
-           ShrubPresenceStart, ShrubProportionStart, NewShrubEnd) %>% 
-    filter(ShrubPresenceStart == 0)
+    #filter(ShrubPresenceStart == 0) %>% 
+    filter(NoShrubPresenceStart == 0) %>% 
+    #select(StartTime, SoilType, yearType, ShrubProportionStart, NewShrubEnd)
+    select(StartTime, SoilType, yearType, NoShrubProportionStart, NewNoShrubEnd)
+  
+  write_csv(output, adjacencyFilename, append = TRUE)
   
   # shrubEstablishmentAdjacency <- output %>% 
   #   select(StartTime, EndTime, WindowRadius, SoilType, yearType, yearTypeId,
@@ -234,7 +219,7 @@ shrubTibble <- imap_dfr(timeStepPairs,
   #   select(StartTime, EndTime, WindowRadius, SoilType, yearType, yearTypeId,
   #          NoShrubPresenceStart, NoShrubProportionStart, NewNoShrubEnd) %>% 
   #   filter(NoShrubPresenceStart == 0)
-})
+}
 rm(studyAreaMaskRaster, soilTypeRaster, soilTypeReclassRaster)
 end_time <- Sys.time()
 end_time - start_time
