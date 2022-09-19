@@ -40,9 +40,12 @@ vignettes/*.pdf
 *.Rproj
 
 # Folders to ignore
+/Docs/
 /Data/Spatial/
-/Data/Tabular/
+/Data/Tabular/old/
+/Intermediates/
 /Libraries/
 /Plots/
 /Model-Inputs/Spatial/
-Model-Inputs/Tabular/adjacency-output.csv
+/Model-Inputs/Tabular/old/
+/Scripts/old/
