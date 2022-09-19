@@ -1,7 +1,7 @@
 ## rangelandForecast
 ## Sarah Chisholm, ApexRMS
 ##
-## Build shrub spread st-sim library
+## Build rangeland forecast st-sim library
 
 ## Workspace ----
 
@@ -65,14 +65,18 @@ transitionSizeDistributionFiles <- list.files(
 mySession <- session()
 
 ## Create new Library ----
-myLibrary <- ssimLibrary(name = file.path(libraryDir, "MLRA42 Shrub Encroachment"),
+# Create a new SyncroSim library file
+# NB: Running this chunk will overwrite any pre-existing library with the same file path
+myLibrary <- ssimLibrary(name = file.path(libraryDir, "Rangeland Forecast"),
                          package = "stsim",
                          session = mySession,
                          overwrite = TRUE)
 
 # Open current library
-myLibrary <- ssimLibrary(name = file.path(libraryDir, "MLRA42 Shrub Encroachment"),
-                         session = mySession)
+# NB: Running this chunk will connect this R session to an existsing library with the same file path
+# zzz: update library name once done troubleshooting
+# myLibrary <- ssimLibrary(name = file.path(libraryDir, "MLRA42 Shrub Encroachment"),
+#                          session = mySession)
 
 # Open the default project
 myProject <- rsyncrosim::project(ssimObject = myLibrary, 
