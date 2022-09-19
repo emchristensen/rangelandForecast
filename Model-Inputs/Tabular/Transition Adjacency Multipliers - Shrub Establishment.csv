@@ -1,67 +1,199 @@
-Primary Stratum,Transition Type/Group,Neighbor Value,Multiplier
-Gypsic,Shrub establishment [Type],0,0.020687008775095928
-Gypsic,Shrub establishment [Type],0.1,0.022059174731114052
-Gypsic,Shrub establishment [Type],0.2,0.023520170312385794
-Gypsic,Shrub establishment [Type],0.30000000000000004,0.025075447617515876
-Gypsic,Shrub establishment [Type],0.4,0.026730752744177376
-Gypsic,Shrub establishment [Type],0.5,0.028492136042355003
-Gypsic,Shrub establishment [Type],0.6000000000000001,0.030365961895964088
-Gypsic,Shrub establishment [Type],0.7000000000000001,0.03235891787504672
-Gypsic,Shrub establishment [Type],0.8,0.03447802307957789
-Gypsic,Shrub establishment [Type],0.9,0.03673063547311524
-Gypsic,Shrub establishment [Type],1,0.039124457980162695
-Bedrock and Colluvium,Shrub establishment [Type],0,0.028950746928586405
-Bedrock and Colluvium,Shrub establishment [Type],0.1,0.03085377610060842
-Bedrock and Colluvium,Shrub establishment [Type],0.2,0.03287766236390632
-Bedrock and Colluvium,Shrub establishment [Type],0.30000000000000004,0.03502950906497278
-Bedrock and Colluvium,Shrub establishment [Type],0.4,0.03731676006683692
-Bedrock and Colluvium,Shrub establishment [Type],0.5,0.03974720549829484
-Bedrock and Colluvium,Shrub establishment [Type],0.6000000000000001,0.04232898594760239
-Bedrock and Colluvium,Shrub establishment [Type],0.7000000000000001,0.04507059481466582
-Bedrock and Colluvium,Shrub establishment [Type],0.8,0.04798087850749705
-Bedrock and Colluvium,Shrub establishment [Type],0.9,0.051069034139893284
-Bedrock and Colluvium,Shrub establishment [Type],1,0.05434460435845468
-Sandy and Deep Sand,Shrub establishment [Type],0,0.021828369142737225
-Sandy and Deep Sand,Shrub establishment [Type],0.1,0.023274442106242646
-Sandy and Deep Sand,Shrub establishment [Type],0.2,0.02481388347912484
-Sandy and Deep Sand,Shrub establishment [Type],0.30000000000000004,0.026452390467707757
-Sandy and Deep Sand,Shrub establishment [Type],0.4,0.028195962878805023
-Sandy and Deep Sand,Shrub establishment [Type],0.5,0.030050912988896908
-Sandy and Deep Sand,Shrub establishment [Type],0.6000000000000001,0.032023874811150065
-Sandy and Deep Sand,Shrub establishment [Type],0.7000000000000001,0.03412181258489407
-Sandy and Deep Sand,Shrub establishment [Type],0.8,0.036352028289634505
-Sandy and Deep Sand,Shrub establishment [Type],0.9,0.038722167961567744
-Sandy and Deep Sand,Shrub establishment [Type],1,0.041240226564979575
-Gravelly and Calcic,Shrub establishment [Type],0,0.07028467556613167
-Gravelly and Calcic,Shrub establishment [Type],0.1,0.07469572149294627
-Gravelly and Calcic,Shrub establishment [Type],0.2,0.07935997282617661
-Gravelly and Calcic,Shrub establishment [Type],0.30000000000000004,0.08428894461772454
-Gravelly and Calcic,Shrub establishment [Type],0.4,0.08949429123585109
-Gravelly and Calcic,Shrub establishment [Type],0.5,0.09498775360302511
-Gravelly and Calcic,Shrub establishment [Type],0.6000000000000001,0.10078109882766265
-Gravelly and Calcic,Shrub establishment [Type],0.7000000000000001,0.10688605184444926
-Gravelly and Calcic,Shrub establishment [Type],0.8,0.1133142187482263
-Gravelly and Calcic,Shrub establishment [Type],0.9,0.12007700159750345
-Gravelly and Calcic,Shrub establishment [Type],1,0.1271855045774642
-Bottomland,Shrub establishment [Type],0,0.059992968308666725
-Bottomland,Shrub establishment [Type],0.1,0.06380243536462417
-Bottomland,Shrub establishment [Type],0.2,0.06783634150044318
-Bottomland,Shrub establishment [Type],0.30000000000000004,0.07210564779763089
-Bottomland,Shrub establishment [Type],0.4,0.0766215588393263
-Bottomland,Shrub establishment [Type],0.5,0.08139548747566802
-Bottomland,Shrub establishment [Type],0.6000000000000001,0.0864390131766013
-Bottomland,Shrub establishment [Type],0.7000000000000001,0.09176383348620142
-Bottomland,Shrub establishment [Type],0.8,0.0973817081192863
-Bottomland,Shrub establishment [Type],0.9,0.1033043952829144
-Bottomland,Shrub establishment [Type],1,0.10954357986455966
-Loamy-Clayey,Shrub establishment [Type],0,0.026732420872328674
-Loamy-Clayey,Shrub establishment [Type],0.1,0.02849391087129832
-Loamy-Clayey,Shrub establishment [Type],0.2,0.03036784980043897
-Loamy-Clayey,Shrub establishment [Type],0.30000000000000004,0.03236092554977962
-Loamy-Clayey,Shrub establishment [Type],0.4,0.03448015754697513
-Loamy-Clayey,Shrub establishment [Type],0.5,0.03673290408986244
-Loamy-Clayey,Shrub establishment [Type],0.6000000000000001,0.0391268684424975
-Loamy-Clayey,Shrub establishment [Type],0.7000000000000001,0.04167010344270607
-Loamy-Clayey,Shrub establishment [Type],0.8,0.04437101434210891
-Loamy-Clayey,Shrub establishment [Type],0.9,0.047238359571508334
-Loamy-Clayey,Shrub establishment [Type],1,0.05028124909581063
+SoilType,yearType,ProportionStart,pred
+Gypsic,Normal,0,0.251605618
+Gypsic,Normal,0.1,0.261154988
+Gypsic,Normal,0.2,0.270935582
+Gypsic,Normal,0.3,0.28094319
+Gypsic,Normal,0.4,0.291172819
+Gypsic,Normal,0.5,0.301618686
+Gypsic,Normal,0.6,0.312274204
+Gypsic,Normal,0.7,0.323131987
+Gypsic,Normal,0.8,0.334183845
+Gypsic,Normal,0.9,0.345420801
+Gypsic,Normal,1,0.356833101
+Bedrock and Colluvium,Normal,0,0.133313804
+Bedrock and Colluvium,Normal,0.1,0.13239546
+Bedrock and Colluvium,Normal,0.2,0.131482482
+Bedrock and Colluvium,Normal,0.3,0.130574853
+Bedrock and Colluvium,Normal,0.4,0.129672554
+Bedrock and Colluvium,Normal,0.5,0.128775566
+Bedrock and Colluvium,Normal,0.6,0.127883871
+Bedrock and Colluvium,Normal,0.7,0.126997451
+Bedrock and Colluvium,Normal,0.8,0.126116287
+Bedrock and Colluvium,Normal,0.9,0.125240359
+Bedrock and Colluvium,Normal,1,0.124369649
+Bottomland,Normal,0,0.079314844
+Bottomland,Normal,0.1,0.086216172
+Bottomland,Normal,0.2,0.093656913
+Bottomland,Normal,0.3,0.101668366
+Bottomland,Normal,0.4,0.110281737
+Bottomland,Normal,0.5,0.11952774
+Bottomland,Normal,0.6,0.129436154
+Bottomland,Normal,0.7,0.140035303
+Bottomland,Normal,0.8,0.151351492
+Bottomland,Normal,0.9,0.163408373
+Bottomland,Normal,1,0.176226278
+Gravelly and Calcic,Normal,0,0.109623685
+Gravelly and Calcic,Normal,0.1,0.112537522
+Gravelly and Calcic,Normal,0.2,0.115518761
+Gravelly and Calcic,Normal,0.3,0.118568425
+Gravelly and Calcic,Normal,0.4,0.121687522
+Gravelly and Calcic,Normal,0.5,0.124877047
+Gravelly and Calcic,Normal,0.6,0.128137975
+Gravelly and Calcic,Normal,0.7,0.131471263
+Gravelly and Calcic,Normal,0.8,0.134877847
+Gravelly and Calcic,Normal,0.9,0.138358638
+Gravelly and Calcic,Normal,1,0.141914523
+Sandy and Deep Sand,Normal,0,0.054628508
+Sandy and Deep Sand,Normal,0.1,0.060680872
+Sandy and Deep Sand,Normal,0.2,0.067356011
+Sandy and Deep Sand,Normal,0.3,0.074707041
+Sandy and Deep Sand,Normal,0.4,0.082789124
+Sandy and Deep Sand,Normal,0.5,0.091658944
+Sandy and Deep Sand,Normal,0.6,0.101374025
+Sandy and Deep Sand,Normal,0.7,0.111991866
+Sandy and Deep Sand,Normal,0.8,0.123568888
+Sandy and Deep Sand,Normal,0.9,0.136159169
+Sandy and Deep Sand,Normal,1,0.149812982
+Loamy-Clayey,Normal,0,0.067629105
+Loamy-Clayey,Normal,0.1,0.074355699
+Loamy-Clayey,Normal,0.2,0.08169272
+Loamy-Clayey,Normal,0.3,0.089683573
+Loamy-Clayey,Normal,0.4,0.098372329
+Loamy-Clayey,Normal,0.5,0.107803184
+Loamy-Clayey,Normal,0.6,0.118019818
+Loamy-Clayey,Normal,0.7,0.12906463
+Loamy-Clayey,Normal,0.8,0.140977847
+Loamy-Clayey,Normal,0.9,0.153796522
+Loamy-Clayey,Normal,1,0.167553414
+Gypsic,Wet,0,0.505147808
+Gypsic,Wet,0.1,0.49687812
+Gypsic,Wet,0.2,0.48861014
+Gypsic,Wet,0.3,0.480348387
+Gypsic,Wet,0.4,0.472097368
+Gypsic,Wet,0.5,0.463861565
+Gypsic,Wet,0.6,0.455645428
+Gypsic,Wet,0.7,0.447453363
+Gypsic,Wet,0.8,0.439289725
+Gypsic,Wet,0.9,0.431158808
+Gypsic,Wet,1,0.423064836
+Bedrock and Colluvium,Wet,0,0.106964128
+Bedrock and Colluvium,Wet,0.1,0.114787691
+Bedrock and Colluvium,Wet,0.2,0.123104603
+Bedrock and Colluvium,Wet,0.3,0.131934301
+Bedrock and Colluvium,Wet,0.4,0.141295265
+Bedrock and Colluvium,Wet,0.5,0.151204715
+Bedrock and Colluvium,Wet,0.6,0.161678291
+Bedrock and Colluvium,Wet,0.7,0.172729712
+Bedrock and Colluvium,Wet,0.8,0.184370409
+Bedrock and Colluvium,Wet,0.9,0.19660916
+Bedrock and Colluvium,Wet,1,0.209451706
+Gravelly and Calcic,Wet,0,0.173047722
+Gravelly and Calcic,Wet,0.1,0.179602847
+Gravelly and Calcic,Wet,0.2,0.186350328
+Gravelly and Calcic,Wet,0.3,0.193291578
+Gravelly and Calcic,Wet,0.4,0.20042769
+Gravelly and Calcic,Wet,0.5,0.207759408
+Gravelly and Calcic,Wet,0.6,0.215287111
+Gravelly and Calcic,Wet,0.7,0.223010786
+Gravelly and Calcic,Wet,0.8,0.230930011
+Gravelly and Calcic,Wet,0.9,0.239043935
+Gravelly and Calcic,Wet,1,0.247351257
+Bottomland,Wet,0,0.16650818
+Bottomland,Wet,0.1,0.179696805
+Bottomland,Wet,0.2,0.193687309
+Bottomland,Wet,0.3,0.208490216
+Bottomland,Wet,0.4,0.224110012
+Bottomland,Wet,0.5,0.240544387
+Bottomland,Wet,0.6,0.257783518
+Bottomland,Wet,0.7,0.275809442
+Bottomland,Wet,0.8,0.294595552
+Bottomland,Wet,0.9,0.314106239
+Bottomland,Wet,1,0.334296726
+Sandy and Deep Sand,Wet,0,0.143613709
+Sandy and Deep Sand,Wet,0.1,0.152769812
+Sandy and Deep Sand,Wet,0.2,0.162398965
+Sandy and Deep Sand,Wet,0.3,0.172511466
+Sandy and Deep Sand,Wet,0.4,0.183116003
+Sandy and Deep Sand,Wet,0.5,0.194219414
+Sandy and Deep Sand,Wet,0.6,0.205826452
+Sandy and Deep Sand,Wet,0.7,0.21793954
+Sandy and Deep Sand,Wet,0.8,0.23055854
+Sandy and Deep Sand,Wet,0.9,0.243680534
+Sandy and Deep Sand,Wet,1,0.257299616
+Loamy-Clayey,Wet,0,0.141319661
+Loamy-Clayey,Wet,0.1,0.152492221
+Loamy-Clayey,Wet,0.2,0.16437898
+Loamy-Clayey,Wet,0.3,0.176998799
+Loamy-Clayey,Wet,0.4,0.190366757
+Loamy-Clayey,Wet,0.5,0.204493475
+Loamy-Clayey,Wet,0.6,0.219384447
+Loamy-Clayey,Wet,0.7,0.235039384
+Loamy-Clayey,Wet,0.8,0.251451589
+Loamy-Clayey,Wet,0.9,0.268607404
+Loamy-Clayey,Wet,1,0.286485738
+Gravelly and Calcic,Dry,0,0.050614559
+Gravelly and Calcic,Dry,0.1,0.058027415
+Gravelly and Calcic,Dry,0.2,0.066449948
+Gravelly and Calcic,Dry,0.3,0.075996359
+Gravelly and Calcic,Dry,0.4,0.086786742
+Gravelly and Calcic,Dry,0.5,0.098945143
+Gravelly and Calcic,Dry,0.6,0.11259686
+Gravelly and Calcic,Dry,0.7,0.127864852
+Gravelly and Calcic,Dry,0.8,0.144865191
+Gravelly and Calcic,Dry,0.9,0.16370156
+Gravelly and Calcic,Dry,1,0.184458845
+Gypsic,Dry,0,0.087003679
+Gypsic,Dry,0.1,0.102959406
+Gypsic,Dry,0.2,0.121452025
+Gypsic,Dry,0.3,0.142737603
+Gypsic,Dry,0.4,0.167044369
+Gypsic,Dry,0.5,0.194550962
+Gypsic,Dry,0.6,0.225361506
+Gypsic,Dry,0.7,0.259479518
+Gypsic,Dry,0.8,0.296783814
+Gypsic,Dry,0.9,0.337010458
+Gypsic,Dry,1,0.379745138
+Bedrock and Colluvium,Dry,0,0.051220294
+Bedrock and Colluvium,Dry,0.1,0.058462104
+Bedrock and Colluvium,Dry,0.2,0.066655869
+Bedrock and Colluvium,Dry,0.3,0.07590545
+Bedrock and Colluvium,Dry,0.4,0.086319853
+Bedrock and Colluvium,Dry,0.5,0.098011586
+Bedrock and Colluvium,Dry,0.6,0.111094375
+Bedrock and Colluvium,Dry,0.7,0.125680155
+Bedrock and Colluvium,Dry,0.8,0.141875282
+Bedrock and Colluvium,Dry,0.9,0.159775944
+Bedrock and Colluvium,Dry,1,0.179462825
+Sandy and Deep Sand,Dry,0,0.017272639
+Sandy and Deep Sand,Dry,0.1,0.021075052
+Sandy and Deep Sand,Dry,0.2,0.025692647
+Sandy and Deep Sand,Dry,0.3,0.03128963
+Sandy and Deep Sand,Dry,0.4,0.038058253
+Sandy and Deep Sand,Dry,0.5,0.046221214
+Sandy and Deep Sand,Dry,0.6,0.056033028
+Sandy and Deep Sand,Dry,0.7,0.067779673
+Sandy and Deep Sand,Dry,0.8,0.081775531
+Sandy and Deep Sand,Dry,0.9,0.098356481
+Sandy and Deep Sand,Dry,1,0.117867853
+Bottomland,Dry,0,0.012130255
+Bottomland,Dry,0.1,0.015695794
+Bottomland,Dry,0.2,0.020287857
+Bottomland,Dry,0.3,0.026187659
+Bottomland,Dry,0.4,0.033744058
+Bottomland,Dry,0.5,0.043383704
+Bottomland,Dry,0.6,0.055618594
+Bottomland,Dry,0.7,0.071047653
+Bottomland,Dry,0.8,0.090347387
+Bottomland,Dry,0.9,0.114245037
+Bottomland,Dry,1,0.143466875
+Loamy-Clayey,Dry,0,0.01120402
+Loamy-Clayey,Dry,0.1,0.014009155
+Loamy-Clayey,Dry,0.2,0.017504176
+Loamy-Clayey,Dry,0.3,0.021851814
+Loamy-Clayey,Dry,0.4,0.027249357
+Loamy-Clayey,Dry,0.5,0.033933876
+Loamy-Clayey,Dry,0.6,0.042187055
+Loamy-Clayey,Dry,0.7,0.05233877
+Loamy-Clayey,Dry,0.8,0.064768161
+Loamy-Clayey,Dry,0.9,0.079900411
+Loamy-Clayey,Dry,1,0.098196902
