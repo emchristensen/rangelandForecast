@@ -14,11 +14,11 @@ library(tidyverse)
 library(terra)
 
 # Define directories
-spatialDataDir <- file.path("Data", "Spatial")
-tabularDataDir <- file.path("Data", "Tabular")
-tabularModelInputsDir <- file.path("Model-Inputs", "Tabular")
-spatialrModelInputsDir <- file.path("Model-Inputs", "Spatial")
-libraryDir <- "Libraries"
+spatialDataDir <- file.path(getwd(), "Data", "Spatial")
+tabularDataDir <- file.path(getwd(), "Data", "Tabular")
+tabularModelInputsDir <- file.path(getwd(), "Model-Inputs", "Tabular")
+spatialrModelInputsDir <- file.path(getwd(), "Model-Inputs", "Spatial")
+libraryDir <- file.path(getwd(), "Libraries")
 
 # Load tabular data
 # Drought year types
@@ -61,22 +61,16 @@ transitionSizeDistributionFiles <- list.files(
   pattern = "Transition Size Distribution", 
   full.names = FALSE)
 
-# Connect R to SyncroSim
-mySession <- session()
-
 ## Create new Library ----
 # Create a new SyncroSim library file
 # NB: Running this chunk will overwrite any pre-existing library with the same file path
 myLibrary <- ssimLibrary(name = file.path(libraryDir, "Rangeland Forecast"),
                          package = "stsim",
-                         session = mySession,
                          overwrite = TRUE)
 
 # Open current library
 # NB: Running this chunk will connect this R session to an existsing library with the same file path
-# zzz: update library name once done troubleshooting
-# myLibrary <- ssimLibrary(name = file.path(libraryDir, "MLRA42 Shrub Encroachment"),
-#                          session = mySession)
+# myLibrary <- ssimLibrary(name = file.path(libraryDir, "Rangeland Forecast"))
 
 # Open the default project
 myProject <- rsyncrosim::project(ssimObject = myLibrary, 
@@ -291,7 +285,8 @@ saveDatasheet(ssimObject = runControlForecastSubScenario,
               name = "stsim_RunControl")
 
 # Memory management
-rm(runControlBaselineSubScenario, runControlBaselineDataSheet)
+rm(runControlBaselineSubScenario, runControlBaselineDataSheet, scenarioName, 
+   runControlForecastSubScenario, runControlForecastDataSheet)
 
 ### Transition Pathways ----
 # Define deterministic transitions
@@ -375,7 +370,7 @@ initialConditionsSpatialForecastValues <- list(
 
 initialConditionsForecastSubScenario <- scenario(
   ssimObject = myProject,
-  scenario = "Initial Conditions Spatial - MLRA42/New Mexico - 2020") 
+  scenario = "Initial Conditions Spatial - MLRA42/New Mexico - Forecast") 
 
 initialConditionsSpatialForecastDataSheet <- datasheet(
   ssimObject = initialConditionsForecastSubScenario,
@@ -438,42 +433,6 @@ rm(tabularOutputOptionValues, spatialOutputOptionValues,
    spatialOutputOptionsDatasheet)
 
 ### Advanced ----
-#### Transition Multiplier ----
-# zzz: do we still need these?
-# # Loop over list of transition multiplier datasheets to create subscenarios
-# for(transitionMultiplierFile in transitionMultiplierFiles) {
-#   
-#   # Load transition multiplier values
-#   transitionMultiplierValues <- read_csv(
-#     file.path(tabularModelInputsDir, transitionMultiplierFile)) %>% 
-#     as.data.frame()
-#   
-#   # Define subscenario name
-#   subScenarioName <- str_remove(string = transitionMultiplierFile,
-#                                 pattern = ".csv")
-#   
-#   # Create transition multiplier subscenario
-#   transitionMultiplierSubScenario <- scenario(
-#     ssimObject = myProject,
-#     scenario = subScenarioName)
-#   
-#   # Create transition multiplier datasheet
-#   transitionMultiplierDataSheet <- datasheet(
-#     ssimObject = transitionMultiplierSubScenario,
-#     name = "stsim_TransitionMultiplierValue",
-#     optional = TRUE) %>% 
-#   addRow(value = transitionMultiplierValues)
-#   
-#   # Save datasheet to library
-#   saveDatasheet(ssimObject = transitionMultiplierSubScenario, 
-#                 data = transitionMultiplierDataSheet,
-#                 name = "stsim_TransitionMultiplierValue")
-# }
-# 
-# # Memory management
-# rm(transitionMultiplierValues, subScenarioName, transitionMultiplierSubScenario,
-#    transitionMultiplierDataSheet)
-
 #### Transition Size Distribution ----
 # Loop over list of transition size distribution datasheets to create subscenarios
 for(transitionSizeDistributionFile in transitionSizeDistributionFiles) {
@@ -767,46 +726,45 @@ saveDatasheet(ssimObject = externalVariablesSubScenario,
               name = "corestime_ExternalVariableValue")
 
 ## Forecast Drought Year
-# Define external variable values
+# Sequence of historic timesteps
 historicTimesteps <- seq(1985, 2020)
-Iteration <- seq(minimumIteration, maximumIteration)
 
-for(i in Iteration) {
-  
-  sampleDroughtStartYear <- sample(x = historicTimesteps, size = 1)
-  sampleDroughtEndYear
- 
-  
-}
+# Sequence of iterations 
+Iterations <- seq(minimumIteration, maximumIteration)
 
+# Create external variable forecast datasheet
+externalVariablesForecastDatasheet <- map_dfr(Iterations, 
+  ~{
+    # Pick a start position in historic sequence
+    startPoint <- sample(x = seq_along(historicTimesteps), size = 1)
+    
+    # Extract historic sequence
+    historicSequence <- seq(startPoint, startPoint + (maximumTimestep - minimumTimestep))
+    
+    # Wrap around historic years 
+    historicSequence <- (historicSequence - 1) %% length(historicTimesteps) + 1
+    
+    # Extract drought year type
+    externalVariablesDatasheet %>% 
+      slice(historicSequence) %>% 
+      mutate(Iteration = .x,
+             Timestep = seq(minimumTimestep, maximumTimestep))
+})
 
-Timestep <- seq(minimumTimestep, maximumTimestep)
-
-externalVariableValues <- droughtYearTypes %>% 
-  rename(Timestep = year,
-         ExternalVariableValue = yearType) %>% 
-  mutate(ExternalVariableTypeID = "Year Type") %>% 
-  select(Timestep, ExternalVariableTypeID, ExternalVariableValue) %>% 
-  as.data.frame()
-
-# Create external variable subscenario
-externalVariablesSubScenario <- scenario(ssimObject = myProject,
-                                         scenario = "External Variables - Drought Year Types - Forecast")
-
-# Create external variable datasheet
-externalVariablesDatasheet <- 
-  datasheet(ssimObject = externalVariablesSubScenario,
-            name = "corestime_ExternalVariableValue",
-            optional = TRUE) %>% 
-  addRow(externalVariableValues)
+# Create external variable forecast subscenario
+externalVariablesForecastSubScenario <- scenario(
+  ssimObject = myProject,
+  scenario = "External Variables - Drought Year Types - Forecast")
 
 # Save datasheet to library
-saveDatasheet(ssimObject = externalVariablesSubScenario,
-              data = externalVariablesDatasheet,
+saveDatasheet(ssimObject = externalVariablesForecastSubScenario,
+              data = externalVariablesForecastDatasheet,
               name = "corestime_ExternalVariableValue")
 
 # Memory management
-rm(externalVariableValues, externalVariablesSubScenario, externalVariablesDatasheet)
+rm(externalVariableValues, externalVariablesSubScenario, 
+   externalVariablesDatasheet, historicSequence, historicTimesteps, Iterations,
+   externalVariablesForecastDatasheet, externalVariablesForecastSubScenario)
 
 ## Full Scenarios ----
 ### Baseline (Historic) ----
@@ -834,115 +792,24 @@ dependency(baselineScenario, "Initial Conditions Spatial - MLRA42/New Mexico - 1
 dependency(baselineScenario, "Transition Pathways")
 dependency(baselineScenario, "Run Control - 1985 to 2020, 1 Iteration")
 
-### 20 year Forecast ----
+### Forecast ----
 # Create a copy of the baseline scenario and replace name
 forecastScenario <- scenario(ssimObject = myProject, 
-                             scneario = "20 Year Forecast", 
+                             scenario = "Forecast", 
                              sourceScenario = baselineScenario)
 
 # Remove some dependencies
 dependency(forecastScenario, "Run Control - 1985 to 2020, 1 Iteration", 
            remove = TRUE, force = TRUE)
-dependency(forecastScenario, "Initial Conditions Spatial - MLRA42/New Mexico - 1985", 
+dependency(forecastScenario, "Initial Conditions Spatial - MLRA42/New Mexico - Baseline", 
            remove = TRUE, force = TRUE)
 dependency(forecastScenario, "External Variables - Drought Year Types - Baseline", 
            remove = TRUE, force = TRUE)
 
 # Add replacement dependencies
+runControlForecast <- str_c("Run Control - ", minimumTimestep, " to ", maximumTimestep,
+                            ", ", maximumIteration, " iteration")
+
 dependency(forecastScenario, "External Variables - Drought Year Types - Forecast")
-dependency(forecastScenario, "Initial Conditions Spatial - MLRA42/New Mexico - 2020")
-dependency(forecastScenario, "Run Control - 2020 to 2040, 1 iteration")
-
-### Transitions Sensitivity Analysis ----
-## This section executes the following steps:
-## 1 - Create a copy of the baseline scenario
-## 2 - Remove the annual transition multipliers
-## 3 - Add a new set of transition multiplier probabilities
-
-# Get list of transition multiplier files excluding the baseline (annual) sheet
-transitionMultiplierFiles <-
-  transitionMultiplierFiles[transitionMultiplierFiles != "Transition Multiplier - Annual.csv"]
-
-# Loop over transition multiplier files to generate individual full scenarios
-for(transitionMultiplierFile in transitionMultiplierFiles) {
-  
-  # Get subscenario name
-  subScenarioName <- transitionMultiplierFile %>% 
-    str_remove(pattern = ".csv")
-  
-  # Define new full scenario name
-  fullScenarioName <- transitionMultiplierFile %>% 
-    str_remove(pattern = "Transition Multiplier - ") %>% 
-    str_remove(pattern = ".csv")
-  
-  # Make a copy of the baseline scenario
-  transitionMultiplierScenario <- scenario(
-    ssimObject = myProject, 
-    scenario = fullScenarioName, 
-    sourceScenario = baselineScenario)
-  
-  # Remove the baseline transition multiplier sub-scenario
-  dependency(scenario = transitionMultiplierScenario,
-             dependency = "Transition Multiplier - Annual",
-             remove = TRUE,
-             force = TRUE)
-  
-  # Add the corresponding sub-scenario to the new full scenario
-  dependency(scenario = transitionMultiplierScenario,
-             dependency = subScenarioName)
-}
-## Organize library ----
-mainFolderIDs <- list()
-subFolderIDs <- list()
-mainFolders <- c("Full Scenarios", "Sub Scenarios")
-subFolders <- c("Sensitivity Analysis", "Run Control", "Transition Pathways", 
-                "Initial Conditions", "Output Options", "Transition Multiplier", 
-                "Transition Adjacency Multiplier")
-
-# Create main folders and save the folder ID numbers to mainFolderIDs
-for(mainFolder in mainFolders) {
-  
-  mainFolderID <-rsyncrosim::command(
-    args = list(
-      create = NULL,
-      folder = NULL,
-      lib = filepath(myLibrary),
-      name = mainFolder,
-      tpid = projectId(myProject)),
-    session = mySession) %>%
-    # "\\d+" is a regular expression to match numbers
-    str_extract("\\d+") %>%
-    as.integer
-  
-  mainFolderIDs <- append(mainFolderIDs, list(c(mainFolder, mainFolderID)))
-}
-
-# Create sub folders and save the folder ID numbers to subFolderIDs
-for(subFolder in subFolders) {
-  
-  subFolderID <-rsyncrosim::command(
-    args = list(
-      create = NULL,
-      folder = NULL,
-      lib = filepath(myLibrary),
-      name = subFolder,
-      tpid = projectId(myProject)),
-    session = mySession) %>%
-    # "\\d+" is a regular expression to match numbers
-    str_extract("\\d+") %>%
-    as.integer
-  
-  subFolderIDs <- append(subFolderIDs, list(c(subFolder, subFolderID)))
-}
-
-# Move the Sub Scenario into the folder
-rsyncrosim::command(
-  args = list(
-    move = NULL,
-    scenario = NULL,
-    lib = filepath(myLibrary),
-    name = "Sub Scenarios",
-    sid = scenarioId(myscenario),
-    tfid = subScenarioFolderID),
-  session = ssimSession) %>%
-  invisible()
+dependency(forecastScenario, "Initial Conditions Spatial - MLRA42/New Mexico - Forecast")
+dependency(forecastScenario, runControlForecast)

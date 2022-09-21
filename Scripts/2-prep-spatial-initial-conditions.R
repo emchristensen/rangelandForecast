@@ -1,7 +1,8 @@
 ## rangelandForecast
 ## Sarah Chisholm, ApexRMS
 ##
-## Create spatial initial conditions
+## Create spatial initial conditions at the full study area extent and at a 
+## smaller test extent
 
 ## Workspace ----
 
@@ -13,8 +14,8 @@ library(tidyverse)
 library(terra)
 
 # Define directories
-spatialDataDir <- file.path("Data", "Spatial")
-spatialModelInputsDir <- file.path("Model-Inputs", "Spatial")
+spatialDataDir <- file.path(getwd(), "Data", "Spatial")
+spatialModelInputsDir <- file.path(getwd(), "Model-Inputs", "Spatial")
 
 # Parameters
 # Test extent
@@ -61,7 +62,7 @@ test <- soilTypeRaster %>%
               NAflag = -9999,
               overwrite = TRUE)
 
-## Crop and mask the state class raster ----
+## Crop and mask the state class rasters ----
 
 # Initial state class - 1985
 stateClass1985Raster <- stateClass1985Raster %>% 
@@ -81,12 +82,22 @@ stateClass2020Raster <- stateClass2020Raster %>%
               NAflag = -9999,
               overwrite = TRUE)
 
-# Initial state class - Test Extent
+# Initial state class - 1985 - Test Extent
 test <- stateClass1985Raster %>% 
   project(y = studyAreaMaskRaster, method = "near") %>% 
   mask(mask = studyAreaMaskRaster) %>% 
   crop(y = targetExtent)%>%  
   writeRaster(filename = file.path(spatialModelInputsDir, "state-class-test-extent-1985.tif"),
+              datatype = "INT2S",
+              NAflag = -9999,
+              overwrite = TRUE)
+
+# Initial state class - 2020 - Test Extent
+test <- stateClass2020Raster %>% 
+  project(y = studyAreaMaskRaster, method = "near") %>% 
+  mask(mask = studyAreaMaskRaster) %>% 
+  crop(y = targetExtent)%>%  
+  writeRaster(filename = file.path(spatialModelInputsDir, "state-class-test-extent-2020.tif"),
               datatype = "INT2S",
               NAflag = -9999,
               overwrite = TRUE)

@@ -1,9 +1,9 @@
-# stsimMLRA42
-# Sarah Chisholm (ApexRMS)
-#
-# Prep transition multiplier tabular datasheets
+## rangelandForecast
+## Sarah Chisholm, ApexRMS
+##
+## Prep transition multiplier datasheets for sensitivity analysis
 
-# Workspace ----
+## Workspace ----
 
 # Set environment variable TZ when running on AWS EC2 instance
 Sys.setenv(TZ='UTC')
@@ -13,8 +13,8 @@ library(tidyverse)
 library(readxl)
 
 # Define Directories
-tabularDataDir <- file.path("Data", "Tabular")
-tabularModelInputsDir <- file.path("Model Inputs", "Tabular")
+tabularDataDir <- file.path(getwd(), "Data", "Tabular")
+tabularModelInputsDir <- file.path(getwd(), "Model Inputs", "Tabular")
 
 # Parameters
 soilTypes <- list(list(x = 2, y = "Sandy and Deep Sand"),
@@ -27,7 +27,7 @@ soilTypes <- list(list(x = 2, y = "Sandy and Deep Sand"),
 # List transition types
 transitionTypes <- c("Shrub decline [Type]", "Shrub in-filling [Type]", "Shrub loss [Type]")
 
-# Transition multipliers by timestep and soil type ----
+## Transition multipliers by timestep and soil type ----
 transitionMultiplierValues <- imap_dfr(soilTypes, 
 ~{
   sheet <- read_excel(file.path(tabularDataDir, "transition_probabilities_all.xlsx"),
@@ -43,8 +43,6 @@ transitionMultiplierValues <- imap_dfr(soilTypes,
     mutate(StratumID = .x$y) %>% 
     filter(Timestep != "NA") %>% 
     mutate(Timestep = Timestep %>% str_remove(".*-") %>% as.numeric()) %>% 
-   # Uncomment the following line to get transition probability values for timesteps 2017-2020 only  
-   # filter(Timestep %in% c(2017,2018,2019,2020)) %>% 
     pivot_longer(cols = noShrubToLowShrub:shrublandToLowShrub,
                  names_to = "TransitionGroupID",
                  values_to = "Amount") %>% 
@@ -63,7 +61,7 @@ transitionMultiplierValues <- imap_dfr(soilTypes,
 
 write_csv(transitionMultiplierValues, file.path(tabularModelInputsDir, "Transition Multiplier - Annual.csv"))
 
-# Transition multipliers sensitivity analysis ----
+## Transition multipliers sensitivity analysis ----
 
 # Get the mean and SD transition probability values stratified by soil type (averaged across timesteps)
 summariseProbabilities <- transitionMultiplierValues %>% 

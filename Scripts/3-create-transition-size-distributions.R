@@ -1,7 +1,7 @@
 ## rangelandForecast
 ## Sarah Chisholm, ApexRMS
 ##
-## Calculate transition size distributions
+## Calculate transition size distributions and generate datasheets
 
 ## Workspace ----
 
@@ -14,12 +14,12 @@ library(raster)
 library(tidyverse)
 
 # Define directories
-spatialDataDir <- file.path("Data", "Spatial")
-tabularModelInputsDir <- file.path("Model-Inputs", "Tabular")
+spatialDataDir <- file.path(getwd(), "Data", "Spatial")
+tabularModelInputsDir <- file.path(getwd(), "Model-Inputs", "Tabular")
 
 # Parameters
 # Test extent
-targetExtent <- ext(808990, 874990, 7599990, 7665990)
+targetExtent <- ext(809000, 875000, 7600000, 7666000)
 
 # Cell size to area in hectares
 scaleFactor <- 0.09

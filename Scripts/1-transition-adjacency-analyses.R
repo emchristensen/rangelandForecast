@@ -1,7 +1,8 @@
 ## rangelandForecast
 ## Sarah Chisholm, ApexRMS
 ##
-## Adjacency analysis of transitions in MLRA 42
+## This script performs adjacency analyses for all transitions in the Rangeland 
+## Forecast SyncroSim library
 
 ## Workspace ----
 
@@ -14,11 +15,10 @@ library(raster)
 library(tidyverse)
 
 # Define directories
-spatialDataDir <- file.path("Data", "Spatial")
-tabularDataDir <- file.path("Data", "Tabular")
-tabularModelInputsDir <- file.path("Model-Inputs", "Tabular")
-intermediatesDir <- file.path("Intermediates")
-plotDir <- file.path("Plots")
+spatialDataDir <- file.path(getwd(), "Data", "Spatial")
+tabularDataDir <- file.path(getwd(), "Data", "Tabular")
+tabularModelInputsDir <- file.path(getwd(), "Model-Inputs", "Tabular")
+intermediatesDir <- file.path(getwd(), "Intermediates")
 
 # Parameters
 # Radius of circular moving window in units of the crs (meters)
