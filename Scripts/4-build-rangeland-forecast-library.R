@@ -41,7 +41,7 @@ maximumTimestep <- 2040
 minimumIteration <- 1
 
 # Monte carlo minimum iteration
-maximumIteration <- 1
+maximumIteration <- 10
 
 # List transition types
 transitionTypes <- c("Shrub in-filling", 
@@ -244,9 +244,11 @@ rm(primaryStratumValues, primaryStratum, stateLabelX, stateLabelY,
 ## Create Sub-Scenarios (dependencies) for each scenario-scoped datasheet
 ### Run Control ----
 ## Run Control - Baseline
+scenarioName <- str_c("Run Control - 1985 to 2020, ", maximumIteration, " Iteration")
+
 runControlBaselineSubScenario <- scenario(
   ssimObject = myProject,
-  scenario = "Run Control - 1985 to 2020, 1 Iteration")
+  scenario = scenarioName)
 
 runControlBaselineDataSheet <- datasheet(
   ssimObject = runControlBaselineSubScenario,
@@ -264,7 +266,7 @@ saveDatasheet(ssimObject = runControlBaselineSubScenario,
 
 ## Run Control - Forecast
 scenarioName <- str_c("Run Control - ", minimumTimestep, " to ", maximumTimestep,
-                      ", ", maximumIteration, " iteration")
+                      ", ", maximumIteration, " Iteration")
 
 runControlForecastSubScenario <- scenario(
   ssimObject = myProject,
@@ -345,8 +347,8 @@ rm(deterministicTransitionPathwayValues, probabilisticTransitionPathwayValues,
 ## Initial Conditions - MLRA 42 / New Mexico - 1985
 # Create a list of the input tif files
 initialConditionsSpatialBaselineValues <- list(
-  StratumFileName = file.path(getwd(), spatialrModelInputsDir, "soil-type.tif"), 
-  StateClassFileName = file.path(getwd(), spatialrModelInputsDir, "state-class-1985.tif")) 
+  StratumFileName = file.path(getwd(), spatialrModelInputsDir, "soil-type-test-extent.tif"), 
+  StateClassFileName = file.path(getwd(), spatialrModelInputsDir, "state-class-test-extent-1985.tif")) 
 
 initialConditionsBaselineSubScenario <- scenario(
   ssimObject = myProject,
@@ -365,8 +367,8 @@ saveDatasheet(ssimObject = initialConditionsBaselineSubScenario,
 ## Initial Conditions - MLRA 42 / New Mexico - 2020
 # Create a list of the input tif files
 initialConditionsSpatialForecastValues <- list(
-  StratumFileName = file.path(getwd(), spatialrModelInputsDir, "soil-type.tif"), 
-  StateClassFileName = file.path(getwd(), spatialrModelInputsDir, "state-class-2020.tif")) 
+  StratumFileName = file.path(getwd(), spatialrModelInputsDir, "soil-type-test-extent.tif"), 
+  StateClassFileName = file.path(getwd(), spatialrModelInputsDir, "state-class-test-extent-2020.tif")) 
 
 initialConditionsForecastSubScenario <- scenario(
   ssimObject = myProject,
@@ -790,7 +792,7 @@ dependency(baselineScenario, "Transition Size Distribution - Shrub Decline")
 dependency(baselineScenario, "Output Options")
 dependency(baselineScenario, "Initial Conditions Spatial - MLRA42/New Mexico - 1985")
 dependency(baselineScenario, "Transition Pathways")
-dependency(baselineScenario, "Run Control - 1985 to 2020, 1 Iteration")
+dependency(baselineScenario, "Run Control - 1985 to 2020, 10 Iteration")
 
 ### Forecast ----
 # Create a copy of the baseline scenario and replace name
@@ -799,7 +801,7 @@ forecastScenario <- scenario(ssimObject = myProject,
                              sourceScenario = baselineScenario)
 
 # Remove some dependencies
-dependency(forecastScenario, "Run Control - 1985 to 2020, 1 Iteration", 
+dependency(forecastScenario, "Run Control - 1985 to 2020, 10 Iteration", 
            remove = TRUE, force = TRUE)
 dependency(forecastScenario, "Initial Conditions Spatial - MLRA42/New Mexico - Baseline", 
            remove = TRUE, force = TRUE)
@@ -808,7 +810,7 @@ dependency(forecastScenario, "External Variables - Drought Year Types - Baseline
 
 # Add replacement dependencies
 runControlForecast <- str_c("Run Control - ", minimumTimestep, " to ", maximumTimestep,
-                            ", ", maximumIteration, " iteration")
+                            ", ", maximumIteration, " Iteration")
 
 dependency(forecastScenario, "External Variables - Drought Year Types - Forecast")
 dependency(forecastScenario, "Initial Conditions Spatial - MLRA42/New Mexico - Forecast")
