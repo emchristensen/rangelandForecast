@@ -17,7 +17,7 @@ library(terra)
 spatialDataDir <- file.path(getwd(), "Data", "Spatial")
 tabularDataDir <- file.path(getwd(), "Data", "Tabular")
 tabularModelInputsDir <- file.path(getwd(), "Model-Inputs", "Tabular")
-spatialrModelInputsDir <- file.path(getwd(), "Model-Inputs", "Spatial")
+spatialModelInputsDir <- file.path(getwd(), "Model-Inputs", "Spatial")
 libraryDir <- file.path(getwd(), "Libraries")
 
 # Load tabular data
@@ -30,7 +30,6 @@ droughtYearTypes <- read_csv(file.path(tabularDataDir, "PDSI_by_year.csv")) %>%
   select(year, yearType)
 
 # Parameters
-
 # Forecast Scenario minimum timestep
 minimumTimestep <- 2020
 
@@ -40,7 +39,7 @@ maximumTimestep <- 2040
 # Monte carlo minimum iteration
 minimumIteration <- 1
 
-# Monte carlo minimum iteration
+# Monte carlo maximum iteration
 maximumIteration <- 10
 
 # List transition types
@@ -286,9 +285,29 @@ saveDatasheet(ssimObject = runControlForecastSubScenario,
               data = runControlForecastDataSheet,
               name = "stsim_RunControl")
 
+## Run Control - Test
+runControlTestSubScenario <- scenario(
+  ssimObject = myProject,
+  scenario = "Run Control - 1 timestep, 1 Iteration")
+
+runControlTestDataSheet <- datasheet(
+  ssimObject = runControlTestSubScenario,
+  name = "stsim_RunControl") %>% 
+  addRow(value = list(MinimumIteration = 1, 
+                      MaximumIteration = 1, 
+                      MinimumTimestep = 1985,
+                      MaximumTimestep = 1986, 
+                      IsSpatial = TRUE))
+
+# Save datasheet to library
+saveDatasheet(ssimObject = runControlTestSubScenario, 
+              data = runControlTestDataSheet,
+              name = "stsim_RunControl")
+
 # Memory management
 rm(runControlBaselineSubScenario, runControlBaselineDataSheet, scenarioName, 
-   runControlForecastSubScenario, runControlForecastDataSheet)
+   runControlForecastSubScenario, runControlForecastDataSheet, 
+   runControlTestSubScenario, runControlTestDataSheet)
 
 ### Transition Pathways ----
 # Define deterministic transitions
@@ -347,12 +366,12 @@ rm(deterministicTransitionPathwayValues, probabilisticTransitionPathwayValues,
 ## Initial Conditions - MLRA 42 / New Mexico - 1985
 # Create a list of the input tif files
 initialConditionsSpatialBaselineValues <- list(
-  StratumFileName = file.path(getwd(), spatialrModelInputsDir, "soil-type-test-extent.tif"), 
-  StateClassFileName = file.path(getwd(), spatialrModelInputsDir, "state-class-test-extent-1985.tif")) 
+  StratumFileName = file.path(spatialModelInputsDir, "soil-type.tif"), 
+  StateClassFileName = file.path(spatialModelInputsDir, "state-class-1985.tif")) 
 
 initialConditionsBaselineSubScenario <- scenario(
   ssimObject = myProject,
-  scenario = "Initial Conditions Spatial - MLRA42/New Mexico - 1985") 
+  scenario = "Initial Conditions Spatial - MLRA42/New Mexico - Baseline") 
 
 initialConditionsSpatialBaselineDataSheet <- datasheet(
   ssimObject = initialConditionsBaselineSubScenario,
@@ -367,8 +386,8 @@ saveDatasheet(ssimObject = initialConditionsBaselineSubScenario,
 ## Initial Conditions - MLRA 42 / New Mexico - 2020
 # Create a list of the input tif files
 initialConditionsSpatialForecastValues <- list(
-  StratumFileName = file.path(getwd(), spatialrModelInputsDir, "soil-type-test-extent.tif"), 
-  StateClassFileName = file.path(getwd(), spatialrModelInputsDir, "state-class-test-extent-2020.tif")) 
+  StratumFileName = file.path(spatialModelInputsDir, "soil-type.tif"), 
+  StateClassFileName = file.path(spatialModelInputsDir, "state-class-2020.tif")) 
 
 initialConditionsForecastSubScenario <- scenario(
   ssimObject = myProject,
@@ -384,10 +403,52 @@ saveDatasheet(ssimObject = initialConditionsForecastSubScenario,
               data = initialConditionsSpatialForecastDataSheet,
               name = "stsim_InitialConditionsSpatial")
 
+## Initial Conditions - MLRA 42 / New Mexico - 1985 - Test extent
+# Create a list of the input tif files
+initialConditionsSpatialTestValues <- list(
+  StratumFileName = file.path(spatialModelInputsDir, "soil-type-test-extent.tif"), 
+  StateClassFileName = file.path(spatialModelInputsDir, "state-class-test-extent-1985.tif")) 
+
+initialConditionsTestSubScenario <- scenario(
+  ssimObject = myProject,
+  scenario = "Initial Conditions Spatial - Test Extent - Baseline") 
+
+initialConditionsSpatialTestDataSheet <- datasheet(
+  ssimObject = initialConditionsTestSubScenario,
+  name = "stsim_InitialConditionsSpatial") %>% 
+  addRow(value = initialConditionsSpatialTestValues)
+
+# Save datasheet to library
+saveDatasheet(ssimObject = initialConditionsTestSubScenario, 
+              data = initialConditionsSpatialTestDataSheet,
+              name = "stsim_InitialConditionsSpatial")
+
+## Initial Conditions - MLRA 42 / New Mexico - 2020 - Test extent
+# Create a list of the input tif files
+initialConditionsSpatialTestValues <- list(
+  StratumFileName = file.path(spatialModelInputsDir, "soil-type-test-extent.tif"), 
+  StateClassFileName = file.path(spatialModelInputsDir, "state-class-test-extent-2020.tif")) 
+
+initialConditionsTestSubScenario <- scenario(
+  ssimObject = myProject,
+  scenario = "Initial Conditions Spatial - Test Extent - Forecast") 
+
+initialConditionsSpatialTestDataSheet <- datasheet(
+  ssimObject = initialConditionsTestSubScenario,
+  name = "stsim_InitialConditionsSpatial") %>% 
+  addRow(value = initialConditionsSpatialTestValues)
+
+# Save datasheet to library
+saveDatasheet(ssimObject = initialConditionsTestSubScenario, 
+              data = initialConditionsSpatialTestDataSheet,
+              name = "stsim_InitialConditionsSpatial")
+
 # Memory management
 rm(initialConditionsSpatialForecastValues, initialConditionsSpatialBaselineValues,
-   initialConditionsForecastSubScenario, initialConditionsBaselineSubScenario, 
-   initialConditionsSpatialForecastDataSheet, initialConditionsSpatialBaselineDataSheet)
+   initialConditionsSpatialTestValues, initialConditionsForecastSubScenario, 
+   initialConditionsBaselineSubScenario, initialConditionsTestSubScenario,
+   initialConditionsSpatialForecastDataSheet, initialConditionsSpatialBaselineDataSheet,
+   initialConditionsSpatialTestDataSheet)
 
 ### Output Options ----
 # Define tabular output options
@@ -528,105 +589,6 @@ saveDatasheet(ssimObject = transitionAdjacencyMultiplierSubScenario,
               data = transitionAdjacencyMultiplierDatasheet,
               name = "stsim_TransitionAdjacencyMultiplier")
 
-# ## Transition Adjacency Multiplier - Shrub Establishment
-# # Define transition adjacency settings values
-# transitionAdjacencySettingsValues1 <- 
-#   data.frame(TransitionGroupID = "Shrub establishment [Type]",
-#              StateAttributeTypeID = "Shrub",
-#             NeighborhoodRadius = 90)
-# 
-# # Load transition adjacency multiplier values
-# transitionAdjacencyMultiplierValues1 <- 
-#   read_csv(file.path(tabularModelInputsDir, 
-#                      "Transition Adjacency Multipliers - Shrub Establishment.csv")) %>% 
-#   rename(StratumID = `Primary Stratum`,
-#          TransitionGroupID = `Transition Type/Group`,
-#          AttributeValue = `Neighbor Value`,
-#          Amount = Multiplier) %>% 
-#   as.data.frame()
-# 
-# # Create Transition Adjacency Multiplier - Shrub Establishment subscenario
-# transitionAdjacencyMultiplierSubScenario1 <- 
-#   scenario(ssimObject = myProject,
-#            scenario = "Transition Adjacency Multiplier - Shrub Establishment")
-# 
-# # Define transition adjacency settings datasheet
-# transitionAdjacencySettingsDatasheet1 <- datasheet(ssimObject = transitionAdjacencyMultiplierSubScenario1, 
-#                                                    name = "stsim_TransitionAdjacencySetting",
-#                                                    optional = TRUE) %>% 
-#   addRow(value = transitionAdjacencySettingsValues1)
-# 
-# # Create transition adjacency datasheet
-# transitionAdjacencyMultiplierDatasheet1 <- datasheet(ssimObject = transitionAdjacencyMultiplierSubScenario1, 
-#                                                     name = "stsim_TransitionAdjacencyMultiplier",
-#                                                     optional = TRUE) %>% 
-#   addRow(value = transitionAdjacencyMultiplierValues1)
-# 
-# # Save datasheets to library
-# saveDatasheet(ssimObject = transitionAdjacencyMultiplierSubScenario1,
-#               data = transitionAdjacencySettingsDatasheet1,
-#               name = "stsim_TransitionAdjacencySetting")
-# 
-# saveDatasheet(ssimObject = transitionAdjacencyMultiplierSubScenario1,
-#               data = transitionAdjacencyMultiplierDatasheet1,
-#               name = "stsim_TransitionAdjacencyMultiplier")
-# 
-# ## Transition Adjacency Multiplier - Shrub Loss
-# # Define transition adjacency settings values
-# transitionAdjacencySettingsValues2 <- data.frame(
-#   TransitionGroupID = "Shrub loss [Type]",
-#   StateAttributeTypeID = "No Shrub",
-#   NeighborhoodRadius = 90)
-# 
-# # Load transition adjacency multiplier values
-# transitionAdjacencyMultiplierValues2 <- 
-#   read_csv(file.path(tabularModelInputsDir, 
-#                      "Transition Adjacency Multipliers - Shrub Loss.csv")) %>% 
-#   rename(StratumID = `Primary Stratum`,
-#          TransitionGroupID = `Transition Type/Group`,
-#          AttributeValue = `Neighbor Value`,
-#          Amount = Multiplier) %>% 
-#   as.data.frame()
-# 
-# # Create Transition Adjacency Multiplier - Shrub Loss subscenario
-# transitionAdjacencyMultiplierSubScenario2 <- 
-#   scenario(ssimObject = myProject,
-#            scenario = "Transition Adjacency Multiplier - Shrub Loss")
-# 
-# # Define transition adjacency settings datasheet
-# transitionAdjacencySettingsDatasheet2 <- datasheet(
-#   ssimObject = transitionAdjacencyMultiplierSubScenario2, 
-#   name = "stsim_TransitionAdjacencySetting",
-#   optional = TRUE) %>% 
-# addRow(value = transitionAdjacencySettingsValues2)
-# 
-# 
-# transitionAdjacencyMultiplierDatasheet2 <- datasheet(
-#   ssimObject = transitionAdjacencyMultiplierSubScenario2, 
-#   name = "stsim_TransitionAdjacencyMultiplier",
-#   optional = TRUE) %>% 
-# addRow(value = transitionAdjacencyMultiplierValues2)
-# 
-# # Save datasheet to library
-# saveDatasheet(ssimObject = transitionAdjacencyMultiplierSubScenario2,
-#               data = transitionAdjacencySettingsDatasheet2,
-#               name = "stsim_TransitionAdjacencySetting")
-# 
-# saveDatasheet(ssimObject = transitionAdjacencyMultiplierSubScenario2,
-#               data = transitionAdjacencyMultiplierDatasheet2,
-#               name = "stsim_TransitionAdjacencyMultiplier")
-# 
-# # Memory management
-# rm(transitionAdjacencySettingsValues1, transitionAdjacencySettingsValues2,
-#    transitionAdjacencyMultiplierValues1, 
-#    transitionAdjacencyMultiplierValues2, 
-#    transitionAdjacencyMultiplierSubScenario1, 
-#    transitionAdjacencyMultiplierSubScenario2,
-#    transitionAdjacencySettingsDatasheet1, 
-#    transitionAdjacencySettingsDatasheet2,
-#    transitionAdjacencyMultiplierDatasheet1, 
-#    transitionAdjacencyMultiplierDatasheet2)
-
 #### State Attribute Values ----
 # Define state attribute values
 stateAttributeValues <- data.frame(
@@ -765,13 +727,39 @@ saveDatasheet(ssimObject = externalVariablesForecastSubScenario,
 
 # Memory management
 rm(externalVariableValues, externalVariablesSubScenario, 
-   externalVariablesDatasheet, historicSequence, historicTimesteps, Iterations,
+   externalVariablesDatasheet, historicTimesteps, Iterations,
    externalVariablesForecastDatasheet, externalVariablesForecastSubScenario)
 
 ## Full Scenarios ----
-### Baseline (Historic) ----
+### Baseline (with transition size distributions) ----
+baselineTestScenario <- scenario(
+  ssimObject = myProject,
+  scenario = "Baseline (with transition size distributions) - Test Extent")
+
+# Merge dependencies for the baseline Scenario
+mergeDependencies(baselineTestScenario) <- TRUE
+
+# Add sub-scenarios as dependencies to the full baseline scenario
+# Note: sub-scenarios are added in reverse order so that they appear in order in the UI
+dependency(baselineTestScenario, "External Variables - Drought Year Types - Baseline")
+dependency(baselineTestScenario, "Distributions - Shrub Loss")
+dependency(baselineTestScenario, "Distributions - Shrub In-Filling")
+dependency(baselineTestScenario, "Distributions - Shrub Establishment")
+dependency(baselineTestScenario, "Distributions - Shrub Decline")
+dependency(baselineTestScenario, "State Attribute Values")
+dependency(baselineTestScenario, "Transition Adjacency Multiplier")
+dependency(baselineTestScenario, "Transition Size Distribution - Shrub Loss")
+dependency(baselineTestScenario, "Transition Size Distribution - Shrub In-Filling")
+dependency(baselineTestScenario, "Transition Size Distribution - Shrub Establishment")
+dependency(baselineTestScenario, "Transition Size Distribution - Shrub Decline")
+dependency(baselineTestScenario, "Output Options")
+dependency(baselineTestScenario, "Initial Conditions Spatial - Test Extent - Baseline")
+dependency(baselineTestScenario, "Transition Pathways")
+dependency(baselineTestScenario, "Run Control - 1 timestep, 1 iteration")
+
+### Baseline (without transition size distributions) ----
 baselineScenario <- scenario(ssimObject = myProject,
-                             scenario = "Baseline Scenario")
+                             scenario = "Baseline (without transition size distributions) - Test Extent")
 
 # Merge dependencies for the baseline Scenario
 mergeDependencies(baselineScenario) <- TRUE
@@ -779,31 +767,27 @@ mergeDependencies(baselineScenario) <- TRUE
 # Add sub-scenarios as dependencies to the full baseline scenario
 # Note: sub-scenarios are added in reverse order so that they appear in order in the UI
 dependency(baselineScenario, "External Variables - Drought Year Types - Baseline")
-dependency(baselineScenario, "Distributions - Shrub Loss")
-dependency(baselineScenario, "Distributions - Shrub In-Filling")
-dependency(baselineScenario, "Distributions - Shrub Establishment")
-dependency(baselineScenario, "Distributions - Shrub Decline")
+dependency(baselineTestScenario, "Distributions - Shrub Loss")
+dependency(baselineTestScenario, "Distributions - Shrub In-Filling")
+dependency(baselineTestScenario, "Distributions - Shrub Establishment")
+dependency(baselineTestScenario, "Distributions - Shrub Decline")
 dependency(baselineScenario, "State Attribute Values")
 dependency(baselineScenario, "Transition Adjacency Multiplier")
-dependency(baselineScenario, "Transition Size Distribution - Shrub Loss")
-dependency(baselineScenario, "Transition Size Distribution - Shrub In-Filling")
-dependency(baselineScenario, "Transition Size Distribution - Shrub Establishment")
-dependency(baselineScenario, "Transition Size Distribution - Shrub Decline")
 dependency(baselineScenario, "Output Options")
-dependency(baselineScenario, "Initial Conditions Spatial - MLRA42/New Mexico - 1985")
+dependency(baselineScenario, "Initial Conditions Spatial - Test Extent - Baseline")
 dependency(baselineScenario, "Transition Pathways")
 dependency(baselineScenario, "Run Control - 1985 to 2020, 10 Iteration")
 
-### Forecast ----
+### Forecast (without transition size distributions) ----
 # Create a copy of the baseline scenario and replace name
 forecastScenario <- scenario(ssimObject = myProject, 
-                             scenario = "Forecast", 
+                             scenario = "Forecast (without transition size distributions) - Test Extent", 
                              sourceScenario = baselineScenario)
 
 # Remove some dependencies
 dependency(forecastScenario, "Run Control - 1985 to 2020, 10 Iteration", 
            remove = TRUE, force = TRUE)
-dependency(forecastScenario, "Initial Conditions Spatial - MLRA42/New Mexico - Baseline", 
+dependency(forecastScenario, "Initial Conditions Spatial - Test Extent - Baseline", 
            remove = TRUE, force = TRUE)
 dependency(forecastScenario, "External Variables - Drought Year Types - Baseline", 
            remove = TRUE, force = TRUE)
@@ -813,5 +797,5 @@ runControlForecast <- str_c("Run Control - ", minimumTimestep, " to ", maximumTi
                             ", ", maximumIteration, " Iteration")
 
 dependency(forecastScenario, "External Variables - Drought Year Types - Forecast")
-dependency(forecastScenario, "Initial Conditions Spatial - MLRA42/New Mexico - Forecast")
+dependency(forecastScenario, "Initial Conditions Spatial - Test Extent - Forecast")
 dependency(forecastScenario, runControlForecast)
