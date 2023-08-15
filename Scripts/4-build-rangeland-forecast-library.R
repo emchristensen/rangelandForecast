@@ -767,16 +767,31 @@ mergeDependencies(baselineScenario) <- TRUE
 # Add sub-scenarios as dependencies to the full baseline scenario
 # Note: sub-scenarios are added in reverse order so that they appear in order in the UI
 dependency(baselineScenario, "External Variables - Drought Year Types - Baseline")
-dependency(baselineTestScenario, "Distributions - Shrub Loss")
-dependency(baselineTestScenario, "Distributions - Shrub In-Filling")
-dependency(baselineTestScenario, "Distributions - Shrub Establishment")
-dependency(baselineTestScenario, "Distributions - Shrub Decline")
+dependency(baselineScenario, "Distributions - Shrub Loss")
+dependency(baselineScenario, "Distributions - Shrub In-Filling")
+dependency(baselineScenario, "Distributions - Shrub Establishment")
+dependency(baselineScenario, "Distributions - Shrub Decline")
 dependency(baselineScenario, "State Attribute Values")
 dependency(baselineScenario, "Transition Adjacency Multiplier")
 dependency(baselineScenario, "Output Options")
 dependency(baselineScenario, "Initial Conditions Spatial - Test Extent - Baseline")
 dependency(baselineScenario, "Transition Pathways")
 dependency(baselineScenario, "Run Control - 1985 to 2020, 10 Iteration")
+
+### Baseline (without transition size distributions) full spatial extent ----
+# Create a copy of the baseline scenario and replace name
+baselineScenario_full <- scenario(ssimObject = myProject, 
+                             scenario = "Baseline (without transition size distributions) - Full Extent", 
+                             sourceScenario = baselineScenario)
+
+# Remove some dependencies
+dependency(baselineScenario_full, "Initial Conditions Spatial - Test Extent - Baseline", 
+           remove = TRUE, force = TRUE)
+
+# Add replacement dependencies
+dependency(baselineScenario_full, "Initial Conditions Spatial - MLRA42/New Mexico - Baseline")
+
+
 
 ### Forecast (without transition size distributions) ----
 # Create a copy of the baseline scenario and replace name
