@@ -755,7 +755,7 @@ dependency(baselineTestScenario, "Transition Size Distribution - Shrub Decline")
 dependency(baselineTestScenario, "Output Options")
 dependency(baselineTestScenario, "Initial Conditions Spatial - Test Extent - Baseline")
 dependency(baselineTestScenario, "Transition Pathways")
-dependency(baselineTestScenario, "Run Control - 1 timestep, 1 iteration")
+dependency(baselineTestScenario, "Run Control - 1 timestep, 1 Iteration")
 
 ### Baseline (without transition size distributions) ----
 baselineScenario <- scenario(ssimObject = myProject,
@@ -814,3 +814,22 @@ runControlForecast <- str_c("Run Control - ", minimumTimestep, " to ", maximumTi
 dependency(forecastScenario, "External Variables - Drought Year Types - Forecast")
 dependency(forecastScenario, "Initial Conditions Spatial - Test Extent - Forecast")
 dependency(forecastScenario, runControlForecast)
+
+### Forecast (WITH transition size distributions) ----
+# Create a copy of the baseline scenario and replace name
+forecastScenarioTSD <- scenario(ssimObject = myProject, 
+                             scenario = "Forecast (with transition size distributions) - Test Extent", 
+                             sourceScenario = baselineTestScenario)
+
+# Remove some dependencies
+dependency(forecastScenarioTSD, "Run Control - 1985 to 2020, 10 Iteration", 
+           remove = TRUE, force = TRUE)
+dependency(forecastScenarioTSD, "Initial Conditions Spatial - Test Extent - Baseline", 
+           remove = TRUE, force = TRUE)
+dependency(forecastScenarioTSD, "External Variables - Drought Year Types - Baseline", 
+           remove = TRUE, force = TRUE)
+
+# Add replacement dependencies
+dependency(forecastScenarioTSD, "External Variables - Drought Year Types - Forecast")
+dependency(forecastScenarioTSD, "Initial Conditions Spatial - Test Extent - Forecast")
+dependency(forecastScenarioTSD, runControlForecast)
